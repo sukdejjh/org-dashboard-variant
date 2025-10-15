@@ -1,0 +1,242 @@
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css');
+
+:root {
+  --navy: #1f2350;
+  --navy-2: #2a2f6b;
+  --border: #e3e8f1;
+  --bg: #ffffff;
+  --text: #233041;
+  
+  /* 테이블 행 크기 통일 */
+  --header-height: 45px;
+  --header-padding: 8px 16px;
+  --header-font-size: 20px;
+  --header-line-height: 1.1;
+}
+
+* { box-sizing: border-box; }
+html, body { 
+  height: 100%; 
+  background: var(--bg); 
+  color: var(--text); 
+  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, 'Helvetica Neue', 'Segoe UI', 'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+}
+button { cursor: pointer; }
+
+.btn {
+  padding: 8px 24px; 
+  border: 1px solid #c9d2e1; 
+  border-radius: 10px; 
+  background:#f7f8fb; 
+  font-weight:700;
+  font-size: 16px;
+  height: 36px;
+  min-width: 80px;
+}
+.btn.active { background: #e8ecf7; }
+
+.card {
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 2px 14px rgba(30,60,90,0.06);
+  background: #fff;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+.table thead th {
+  background: var(--navy); 
+  color: #fff;
+  padding: 8px 12px; 
+  font-size: 16px; 
+  text-align: center;
+  font-weight: 600;
+  line-height: 1.1;
+  vertical-align: middle;
+  height: 40px;
+}
+.table td {
+  padding: 6px 12px; 
+  border-bottom: 1px solid #eef2f9;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.1;
+  vertical-align: middle;
+}
+.table .right { text-align: center; }
+.table .muted { opacity: .7; }
+
+.expander { 
+  border: none; 
+  background: transparent; 
+  padding: 12px 20px; 
+  font-size: 24px; 
+  color: var(--text); 
+  cursor: pointer;
+}
+.row { }
+.total { 
+  background: #e8ecf7; 
+  font-weight: 900; 
+  border-top: 3px solid var(--navy); 
+  font-size: 18px;
+  color: var(--navy);
+  height: 48px;
+  padding: 12px 16px;
+  line-height: 1.1;
+  vertical-align: middle;
+}
+
+/* 드롭다운 스타일 */
+select {
+  padding: 6px 12px;
+  border: 1px solid #c9d2e1;
+  border-radius: 6px;
+  background: white;
+  font-size: 16px;
+  font-family: inherit;
+  cursor: pointer;
+  font-weight: 700;
+  height: 32px;
+  min-width: 120px;
+  text-align: center;
+  text-align-last: center;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  background-size: 16px;
+  padding-right: 32px;
+  direction: ltr;
+  text-indent: 0;
+}
+
+/* 드롭다운 옵션 스타일 */
+select option {
+  text-align: center;
+  padding: 8px;
+  font-weight: 600;
+}
+
+/* 메인 페이지 스타일 */
+.main-container {
+  padding: 32px;
+  max-width: 100%;
+  margin: 0;
+}
+
+.page-title {
+  font-size: 24px;
+  font-weight: 700;
+  text-align: left;
+  margin-bottom: 24px;
+  color: var(--navy);
+}
+
+.section-title {
+  font-size: 18px;
+  font-weight: 600;
+  text-align: left;
+  margin-bottom: 16px;
+  color: var(--text);
+}
+
+.corp-selector {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-start;
+  align-items: center;
+  margin-bottom: 32px;
+  width: 100%;
+  margin-left: 0;
+  padding-left: 0;
+  text-align: left;
+}
+
+/* ✅ 테이블 가로 스크롤 컨테이너 */
+.table-scroll {
+  width: 100%;
+  overflow-x: auto;            /* 가로 스크롤 */
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* ✅ 내용 넓이에 맞춰 테이블이 확장되도록 */
+.table {
+  width: max-content;          /* 콘텐츠 폭에 맞춰 확장 */
+  min-width: 100%;             /* 최소 화면 폭은 유지 */
+}
+
+/* ✅ 숫자 줄바꿈 방지 */
+.table th,
+.table td {
+  white-space: nowrap;
+}
+
+/* (선택) sticky 헤더/셀 배경 커스터마이즈용 변수 */
+:root {
+  --thead-sticky-bg: #0f1b3f;  /* 헤더 네이비 톤(프로젝트 톤에 맞춰 조정 가능) */
+  --tbody-sticky-bg: #ffffff;  /* 바디 셀 배경 */
+}
+
+/* 부서 뷰 토글 버튼 스타일 */
+.seg { 
+  padding: 6px 12px; 
+  border: 1px solid #c8d0ff; 
+  background: #fff; 
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+.seg:first-child { 
+  border-radius: 8px 0 0 8px; 
+  border-right: none;
+}
+.seg:last-child { 
+  border-radius: 0 8px 8px 0; 
+}
+.seg.active { 
+  background: #0f1b3f; 
+  color: #fff; 
+  border-color: #0f1b3f; 
+}
+.seg:hover:not(.active) {
+  background: #f8f9ff;
+  border-color: #a8b5ff;
+}
+
+.divider { 
+  width: 1px; 
+  height: 22px; 
+  background: rgba(0,0,0,.12); 
+  display: inline-block; 
+  margin: 0 8px;
+}
+
+/* 조절용 변수 */
+.seg-group { --seg-min: 10rem; }  /* 버튼폭 조절 */
+
+/* .seg-group {
+  display: inline-flex;
+  gap: 8px;
+} */
+.seg-group .seg {
+  flex: 1 1 var(--seg-min);
+  min-width: var(--seg-min);      /* ← 최소 너비 보장 */
+  padding: 10px 14px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+
