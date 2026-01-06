@@ -29,12 +29,13 @@ export type FlatRow = {
   AsIsTO?: number;
   AsIsPO?: number;
 };
-
+type NodeKind = 'department' | 'team' | 'process' | 'factory' | 'plant' | 'line';
 type JobAgg = { ToBeTargetTO?: number; AsIsTO?: number; AsIsPO?: number };
 
 type TreeRow = {
   id: string;
-  level: 0 | 1 | 2 | 3 | 4 | 5; // 0:Dept,1:Team,2:Process,3:(Factory|Plant),4:(Plant|Line),5:Line
+  level: 0 | 1 | 2 | 3 | 4 | 5;
+  kind: NodeKind; 
   Department: string;
   Team?: string;
   Process?: string;
@@ -85,10 +86,11 @@ function buildTree(rows: FlatRow[]): TreeRow[] {
     plantChildren[PL] ??= {
       id: `PL:${D}/${U}/${V}${F?`/${F}`:''}/${PL}`,
       level: plantLevel,
+      kind: 'plant',
       Department: D, Team: U, Process: V, Factory: F || undefined, Plant: PL, children: {}
     };
 
-    // ⬇️ 변경 포인트: Line이 없으면 Plant를 리프로 사용
+    // Line이 없으면 Plant를 리프로 사용
     const hasLine = r.Line !== undefined && String(r.Line).trim() !== '';
     let leaf: TreeRow;
 
@@ -100,6 +102,7 @@ function buildTree(rows: FlatRow[]): TreeRow[] {
       lineChildren[L] ??= {
         id: `L:${D}/${U}/${V}${F?`/${F}`:''}/${PL}/${L}`,
         level: lineLevel,
+        kind: 'line',
         Department: D, Team: U, Process: V, Factory: F || undefined, Plant: PL, Line: L,
         ToBeTargetTO: 0, AsIsTO: 0, AsIsPO: 0,
         _jobs: {} as Record<string, JobAgg>,
@@ -182,25 +185,58 @@ export default function SmartTableMode2({
       const n = row.original;
       const indent = n.level * 20;
 
-      // 레벨별 라벨: Factory가 없을 때(레벨 3=Plant, 4=Line)도 지원
-      const label =
-        n.level === 0 ? n.Department :
-        n.level === 1 ? (n.Team ?? '') :
-        n.level === 2 ? (n.Process ?? '') :
-        n.level === 3 ? (n.Factory ?? n.Plant ?? '') :
-        n.level === 4 ? ((n.Factory ? n.Plant : n.Line) ?? '') :
-        n.level === 5 ? (n.Line ?? '') : '';
+      const label = (() => {
+        switch (n.kind) {
+          case 'department': return n.Department;
+          case 'team':       return n.Team ?? '';
+          case 'process':    return n.Process ?? '';
+          case 'factory':    return n.Factory ?? '';
+          case 'plant':      return n.Plant ?? '';
+          case 'line':       return n.Line ?? '';
+          default:           return '';
+        }
+      })();
+      // // 레벨별 라벨: Factory가 없을 때(레벨 3=Plant, 4=Line)도 지원
+      // const label =
+      //   n.level === 0 ? n.Department :
+      //   n.level === 1 ? (n.Team ?? '') :
+      //   n.level === 2 ? (n.Process ?? '') :
+      //   n.level === 3 ? (n.Factory ?? n.Plant ?? '') :
+      //   n.level === 4 ? ((n.Factory ? n.Plant : n.Line) ?? '') :
+      //   n.level === 5 ? (n.Line ?? '') : '';
+
+      // return (
+      //   <div style={{ display:'flex', alignItems:'center', gap:8, paddingLeft: indent }}>
+      //     {row.getCanExpand() && (
+      //       <button className="expander" onClick={row.getToggleExpandedHandler()}>
+      //         {row.getIsExpanded() ? '▾' : '▸'}
+      //       </button>
+      //     )}
+      //     <span style={{ fontWeight: n.level===0?700:500, fontSize: n.level===0?14:12 }}>{label}</span>
+      //   </div>
+      // );
+
+      const canExpand = row.getCanExpand();
 
       return (
         <div style={{ display:'flex', alignItems:'center', gap:8, paddingLeft: indent }}>
-          {row.getCanExpand() && (
-            <button className="expander" onClick={row.getToggleExpandedHandler()}>
-              {row.getIsExpanded() ? '▾' : '▸'}
-            </button>
-          )}
-          <span style={{ fontWeight: n.level===0?700:500, fontSize: n.level===0?14:12 }}>{label}</span>
+          <button
+            className="expander"
+            style={{ visibility: canExpand ? 'visible' : 'hidden' }}
+            onClick={canExpand ? row.getToggleExpandedHandler() : undefined}
+            disabled={!canExpand}
+            tabIndex={canExpand ? 0 : -1}
+            aria-hidden={!canExpand}
+          >
+            {row.getIsExpanded() ? '▾' : '▸'}
+          </button>
+
+          <span style={{ fontWeight: n.level===0?700:500, fontSize: n.level===0?14:12 }}>
+            {label}
+          </span>
         </div>
       );
+
     },
   };
 

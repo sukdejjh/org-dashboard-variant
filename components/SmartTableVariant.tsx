@@ -31,11 +31,14 @@ export type FlatRow = {
   AsIsPO?: number;
 };
 
+type NodeKind = 'department' | 'team' | 'process' | 'factory' | 'plant' | 'line';
 type JobAgg = { ToBeTargetTO?: number; AsIsTO?: number; AsIsPO?: number };
+
 
 type TreeRow = {
   id: string;
   level: 0 | 1 | 2 | 3 | 4 | 5;
+  kind: NodeKind;
   Department: string;
   Team?: string;
   Process?: string;
@@ -185,14 +188,34 @@ export default function SmartTableVariant({
         n.level === 3 ? (n.Factory ?? n.Plant ?? '') :
         n.level === 4 ? ((n.Factory ? n.Plant : n.Line) ?? '') :
         n.level === 5 ? (n.Line ?? '') : '';
+      // return (
+      //   <div style={{ display:'flex', alignItems:'center', gap:8, paddingLeft: indent }}>
+      //     {row.getCanExpand() && (
+      //       <button className="expander" onClick={row.getToggleExpandedHandler()}>
+      //         {row.getIsExpanded() ? '▾' : '▸'}
+      //       </button>
+      //     )}
+      //     <span style={{ fontWeight: n.level === 0 ? 700 : 500, fontSize: n.level === 0 ? 14 : 12 }}>
+      //       {label}
+      //     </span>
+      //   </div>
+      // );
+      const canExpand = row.getCanExpand();
+
       return (
         <div style={{ display:'flex', alignItems:'center', gap:8, paddingLeft: indent }}>
-          {row.getCanExpand() && (
-            <button className="expander" onClick={row.getToggleExpandedHandler()}>
-              {row.getIsExpanded() ? '▾' : '▸'}
-            </button>
-          )}
-          <span style={{ fontWeight: n.level === 0 ? 700 : 500, fontSize: n.level === 0 ? 14 : 12 }}>
+          <button
+            className="expander"
+            style={{ visibility: canExpand ? 'visible' : 'hidden' }}
+            onClick={canExpand ? row.getToggleExpandedHandler() : undefined}
+            disabled={!canExpand}
+            tabIndex={canExpand ? 0 : -1}
+            aria-hidden={!canExpand}
+          >
+            {row.getIsExpanded() ? '▾' : '▸'}
+          </button>
+
+          <span style={{ fontWeight: n.level===0?700:500, fontSize: n.level===0?14:12 }}>
             {label}
           </span>
         </div>
