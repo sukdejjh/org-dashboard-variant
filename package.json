@@ -11,7 +11,7 @@
   "dependencies": {
     "@tanstack/react-table": "^8.21.3",
     "@tanstack/react-virtual": "^3.13.12",
-    "next": "15.5.2",
+    "next": "^15.5.7",
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "xlsx": "^0.18.5"
@@ -25,5 +25,7 @@
     "eslint-config-next": "15.5.2",
     "typescript": "^5"
   },
-  "engines": { "node": ">=18 <=22" }
+  "engines": {
+    "node": ">=18 <=22"
+  }
 }
